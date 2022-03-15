@@ -1,0 +1,12 @@
+[programs.localnet]
+solana_svelte_twitter = "HYiT5zQFaqgLLVXWungTFSEC8ZbHK1w4mJ9TLYVnrrgY"
+
+[registry]
+url = "https://anchor.projectserum.com"
+
+[provider]
+cluster = "localnet"
+wallet = "/Users/silvestrevivo/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
