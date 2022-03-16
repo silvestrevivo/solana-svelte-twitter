@@ -1,6 +1,10 @@
 # Solana-svelte-twitter
 
-Project made with **Anchor and SvelteKit** regarding the @lorisleiva . The Anchor application lives in the `root folder`. In the `app` folder you can find the SvelteKit application.
+Project made with **Anchor and SvelteKit** regarding the @lorisleiva tutorial. The Anchor application lives in the `root folder`. In the `app` folder you can find the SvelteKit application.
+
+![screenshot2](screenshot02.png)
+
+![screenshot1](screenshot01.png)
 
 ## Anchor Setup
 

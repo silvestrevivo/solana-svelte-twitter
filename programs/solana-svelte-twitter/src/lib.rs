@@ -18,15 +18,12 @@ pub mod solana_svelte_twitter {
         tweet.timestamp = clock.unix_timestamp;
         tweet.topic = topic;
         tweet.content = content;
+        tweet.favorite = false;
 
         Ok(())
     }
 
-    pub fn update_tweet(
-        ctx: Context<UpdateTweet>,
-        topic: String,
-        content: String,
-    ) -> ProgramResult {
+    pub fn update_tweet(ctx: Context<UpdateTweet>, topic: String, content: String) -> Result<()> {
         let tweet: &mut Account<Tweet> = &mut ctx.accounts.tweet;
 
         if topic.chars().count() > 50 {
@@ -43,7 +40,15 @@ pub mod solana_svelte_twitter {
         Ok(())
     }
 
-    pub fn delete_tweet(_ctx: Context<DeleteTweet>) -> ProgramResult {
+    pub fn make_favorite(ctx: Context<MakeFavorite>) -> Result<()> {
+        let tweet: &mut Account<Tweet> = &mut ctx.accounts.tweet;
+
+        tweet.favorite = true;
+
+        Ok(())
+    }
+
+    pub fn delete_tweet(_ctx: Context<DeleteTweet>) -> Result<()> {
         Ok(())
     }
 }
@@ -65,6 +70,12 @@ pub struct UpdateTweet<'info> {
 }
 
 #[derive(Accounts)]
+pub struct MakeFavorite<'info> {
+    #[account(mut)]
+    pub tweet: Account<'info, Tweet>,
+}
+
+#[derive(Accounts)]
 pub struct DeleteTweet<'info> {
     #[account(mut, has_one = author, close = author)]
     pub tweet: Account<'info, Tweet>,
@@ -76,6 +87,7 @@ pub struct Tweet {
     pub timestamp: i64,
     pub topic: String,
     pub content: String,
+    pub favorite: bool,
 }
 
 const DISCRIMINATOR_LENGTH: usize = 8;
@@ -84,13 +96,15 @@ const TIMESTAMP_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
 const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
 const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
+const FAVORITE_LENGTH: usize = 1; // 280 chars max.
 
 impl Tweet {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH // Author.
         + TIMESTAMP_LENGTH // Timestamp.
         + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
-        + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH; // Content.
+        + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH // Content.
+        + FAVORITE_LENGTH; // Favorite
 }
 
 #[error]
