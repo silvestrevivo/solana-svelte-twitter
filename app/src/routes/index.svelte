@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import TweetCard from '$lib/TweetCard.svelte';
 	import { workSpace } from '@svelte-on-solana/wallet-adapter-anchor';
 	import type { PublicKey } from '@solana/web3.js';
@@ -7,7 +8,6 @@
 
 	async function fetchAllTweets() {
 		const tweetAccounts = await $workSpace.program.account.tweet.all();
-		console.log('tweetAccounts: ', tweetAccounts);
 		tweets = tweetAccounts;
 	}
 
@@ -35,13 +35,17 @@
 
 <div class="space-y-8">
 	<h2 class="text-primary-content text-2xl font-bold">Tweeter feed</h2>
-	{#each tweets as { account, publicKey } (publicKey.toString())}
-		<TweetCard
-			{account}
-			{publicKey}
-			editable
-			on:remove={() => removeTweet(publicKey)}
-			on:fav={() => makeFavorite(publicKey)}
-		/>
+	{#each tweets as { account, publicKey }, i (publicKey.toString())}
+		<div in:fade={{ duration: 200, delay: i * 100 }}>
+			<TweetCard
+				{account}
+				{publicKey}
+				editable
+				on:remove={() => removeTweet(publicKey)}
+				on:fav={() => makeFavorite(publicKey)}
+			/>
+		</div>
+	{:else}
+		<div class="py-8">There are no tweets yet...</div>
 	{/each}
 </div>

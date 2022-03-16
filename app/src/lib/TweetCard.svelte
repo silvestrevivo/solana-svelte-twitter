@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Clipboard from 'svelte-clipboard';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
@@ -23,9 +24,12 @@
 		<h2 class="card-title">{topic}</h2>
 		<p class="my-4">{content}</p>
 		<div class="card-actions justify-between items-center">
-			<div class="badge badge-outline">
-				{author.toString().slice(0, 4) + '..' + author.toString().slice(-4)}
-			</div>
+			<Clipboard text={author.toString()} let:copy on:copy={() => {}}>
+				<div class="badge badge-outline cursor-pointer" on:click={copy}>
+					{author.toString().slice(0, 4) + '..' + author.toString().slice(-4)}
+				</div>
+			</Clipboard>
+
 			<div class="badge badge-primary badge-outline">
 				{timestamp}
 			</div>
