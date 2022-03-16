@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Header from '$lib/Header.svelte';
-	import { clusterApiUrl } from '@solana/web3.js';
 	import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
-	import { WalletProvider, ConnectionProvider } from '@svelte-on-solana/wallet-adapter-ui';
+	import { WalletProvider } from '@svelte-on-solana/wallet-adapter-ui';
+	import { AnchorConnectionProvider } from '@svelte-on-solana/wallet-adapter-anchor';
+	import idl from '../../../target/idl/solana_svelte_twitter.json';
 	import '../app.css';
 
 	const localStorageKey = 'walletAdapter';
-	const network = clusterApiUrl('devnet'); // localhost or mainnet
+	const network = 'http://127.0.0.1:8899';
 
 	let wallets,
 		checked = false;
@@ -26,7 +27,7 @@
 </script>
 
 <WalletProvider {localStorageKey} {wallets} autoConnect />
-<ConnectionProvider {network} />
+<AnchorConnectionProvider {network} {idl} />
 <div class="h-screen drawer drawer-mobile w-full">
 	<input id="my-drawer-2" type="checkbox" class="drawer-toggle" bind:checked />
 	<div class="drawer-content flex flex-col bg-base-200">
