@@ -8,13 +8,14 @@
 		content: string;
 		author: string;
 		timestamp: string;
+		favorite: boolean;
 	};
 
 	export let publicKey: string,
 		account: Account,
 		editable = false;
 
-	let { topic, content, author, timestamp } = account;
+	$: ({ topic, content, author, timestamp, favorite } = account);
 </script>
 
 <div class="card w-96 bg-base-100 shadow-xl">
@@ -34,7 +35,7 @@
 					<!-- heart -->
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 fill-accent-focus cursor-pointer"
+						class="h-5 w-5 {favorite ? 'fill-red-700' : 'fill-accent-focus'} cursor-pointer"
 						viewBox="0 0 20 20"
 						fill="currentColor"
 						on:click={() => dispatch('fav', publicKey)}

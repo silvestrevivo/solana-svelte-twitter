@@ -7,7 +7,6 @@
 		content = '';
 
 	const addTweet = async () => {
-		console.log('addTweet: ', topic, content);
 		const tweet = web3.Keypair.generate();
 
 		try {
