@@ -32,7 +32,7 @@
 	<input id="my-drawer-2" type="checkbox" class="drawer-toggle" bind:checked />
 	<div class="drawer-content flex flex-col bg-base-200">
 		<Header on:open={openDrawer} />
-		<main class="h-full overflow-y-scroll">
+		<main class="h-full overflow-y-scroll py-8 px-4">
 			{#if $walletStore?.connected}
 				<slot />
 			{:else}
