@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-static';
 import preprocess from 'svelte-preprocess';
 import svg from '@poppanator/sveltekit-svg'
 
@@ -19,8 +19,10 @@ const config = {
 			optimizeDeps: {
 				include: ['@project-serum/anchor']
 			},
-			plugins: [svg({type: 'src' })]
-
+			plugins: [svg({type: 'src' })],
+			prerender: {
+				default: true
+			}
 		}
 	}
 };
