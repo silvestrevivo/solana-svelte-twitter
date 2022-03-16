@@ -4,6 +4,7 @@
 	import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
 	import { WalletProvider } from '@svelte-on-solana/wallet-adapter-ui';
 	import { AnchorConnectionProvider } from '@svelte-on-solana/wallet-adapter-anchor';
+	import { page } from '$app/stores';
 	import idl from '../../../target/idl/solana_svelte_twitter.json';
 	import '../app.css';
 
@@ -47,13 +48,20 @@
 	<div class="drawer-side">
 		<label for="my-drawer-2" class="drawer-overlay" />
 		<div class="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
-			<div class="border-solid h-12 border-gray-300 border-b">
+			<div class="border-solid h-11 border-gray-300 border-b">
+				<img src="solanalogo.png" class="hidden md:inline-block h-10" alt="solana-logo" />
 				<h1 class="text-primary-focus text-xl uppercase flex-1 md:hidden">Anchor Svelte Twitter</h1>
 			</div>
 			<ul class="py-4 space-y-4">
-				<li><a href="/">Home</a></li>
-				<li><a href="add-tweet">Add tweet</a></li>
-				<li><a href="filter-by-user">Filter by user</a></li>
+				<li><a href="/" class:bg-primary={$page.url.pathname === '/'}>Home</a></li>
+				<li>
+					<a href="add-tweet" class:bg-primary={$page.url.pathname === '/add-tweet'}>Add tweet</a>
+				</li>
+				<li>
+					<a href="filter-by-user" class:bg-primary={$page.url.pathname === '/filter-by-user'}
+						>Filter by user</a
+					>
+				</li>
 			</ul>
 		</div>
 	</div>

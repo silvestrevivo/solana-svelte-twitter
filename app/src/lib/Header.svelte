@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Balance from '$lib/Balance.svelte';
 	import { WalletMultiButton } from '@svelte-on-solana/wallet-adapter-ui';
 	import { createEventDispatcher } from 'svelte';
 
@@ -21,5 +22,6 @@
 	</svg>
 	<h1 class="text-primary-focus text-xl uppercase flex-1 hidden md:block">Anchor Svelte Twitter</h1>
 
+	<Balance />
 	<WalletMultiButton />
 </div>

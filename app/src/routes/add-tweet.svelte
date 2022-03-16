@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { workSpace } from '@svelte-on-solana/wallet-adapter-anchor';
-	import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
 	import { web3 } from '@project-serum/anchor';
-	import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
+	import { goto } from '$app/navigation';
 
-	$: console.log('workSpace: ', $workSpace);
 	let topic = '',
 		content = '';
 
@@ -22,8 +20,9 @@
 				signers: [tweet]
 			});
 
-			const tweetAccount = await $workSpace.program.account.tweet.fetch(tweet.publicKey);
-			console.log('tweetAccount: ', tweetAccount);
+			topic = '';
+			content = '';
+			goto('/');
 		} catch (error) {
 			console.log('Error', error);
 		}
