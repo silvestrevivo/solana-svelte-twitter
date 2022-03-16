@@ -1,11 +1,22 @@
 <script lang="ts">
+	import { workSpace } from '@svelte-on-solana/wallet-adapter-anchor';
 	import TweetCard from '$lib/TweetCard.svelte';
 
 	let address = '',
 		tweets = [];
 
-	function filterTweets() {
-		////
+	async function filterTweets() {
+		if (address) {
+			const tweetAccounts = await $workSpace.program.account.tweet.all([
+				{
+					memcmp: {
+						offset: 8,
+						bytes: address
+					}
+				}
+			]);
+			tweets = tweetAccounts;
+		}
 	}
 </script>
 
@@ -24,12 +35,15 @@
 			placeholder="Type the solana user address here"
 			class="input input-bordered w-full max-w-2xl"
 			bind:value={address}
+			on:keydown={() => (tweets = [])}
 		/>
 	</div>
 
 	<button class="btn btn-active btn-primary" type="submit">filter tweets</button>
 </form>
 
-{#each tweets as { account, publicKey } (publicKey.toString())}
-	<TweetCard {account} {publicKey} />
-{/each}
+<div class="space-y-8 mt-8">
+	{#each tweets as { account, publicKey } (publicKey.toString())}
+		<TweetCard {account} {publicKey} />
+	{/each}
+</div>
