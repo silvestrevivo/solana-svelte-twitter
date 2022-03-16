@@ -1,15 +1,33 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::system_program;
 
 declare_id!("HYiT5zQFaqgLLVXWungTFSEC8ZbHK1w4mJ9TLYVnrrgY");
 
 #[program]
 pub mod solana_svelte_twitter {
     use super::*;
-    pub fn send_tweet(ctx: Context<SendTweet>, topic: String, content: String) -> ProgramResult {
+    pub fn send_tweet(ctx: Context<SendTweet>, topic: String, content: String) -> Result<()> {
         let tweet: &mut Account<Tweet> = &mut ctx.accounts.tweet;
         let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
+
+        require!(topic.chars().count() <= 50, ErrorCode::TopicTooLong);
+
+        require!(content.chars().count() <= 280, ErrorCode::ContentTooLong);
+
+        tweet.author = *author.key;
+        tweet.timestamp = clock.unix_timestamp;
+        tweet.topic = topic;
+        tweet.content = content;
+
+        Ok(())
+    }
+
+    pub fn update_tweet(
+        ctx: Context<UpdateTweet>,
+        topic: String,
+        content: String,
+    ) -> ProgramResult {
+        let tweet: &mut Account<Tweet> = &mut ctx.accounts.tweet;
 
         if topic.chars().count() > 50 {
             return Err(ErrorCode::TopicTooLong.into());
@@ -19,11 +37,13 @@ pub mod solana_svelte_twitter {
             return Err(ErrorCode::ContentTooLong.into());
         }
 
-        tweet.author = *author.key;
-        tweet.timestamp = clock.unix_timestamp;
         tweet.topic = topic;
         tweet.content = content;
 
+        Ok(())
+    }
+
+    pub fn delete_tweet(_ctx: Context<DeleteTweet>) -> ProgramResult {
         Ok(())
     }
 }
@@ -34,8 +54,21 @@ pub struct SendTweet<'info> {
     pub tweet: Account<'info, Tweet>,
     #[account(mut)]
     pub author: Signer<'info>,
-    #[account(address = system_program::ID)]
     pub system_program: AccountInfo<'info>,
+}
+
+#[derive(Accounts)]
+pub struct UpdateTweet<'info> {
+    #[account(mut, has_one = author)]
+    pub tweet: Account<'info, Tweet>,
+    pub author: Signer<'info>,
+}
+
+#[derive(Accounts)]
+pub struct DeleteTweet<'info> {
+    #[account(mut, has_one = author, close = author)]
+    pub tweet: Account<'info, Tweet>,
+    pub author: Signer<'info>,
 }
 #[account]
 pub struct Tweet {
