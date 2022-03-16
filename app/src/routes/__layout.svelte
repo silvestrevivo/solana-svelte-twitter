@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Header from '$lib/Header.svelte';
+	import Notifications from '$lib/Notifications.svelte';
 	import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
 	import { WalletProvider } from '@svelte-on-solana/wallet-adapter-ui';
 	import { AnchorConnectionProvider } from '@svelte-on-solana/wallet-adapter-anchor';
+	import { notificationStore } from '../stores/nofitications';
 	import { page } from '$app/stores';
 	import idl from '../../../target/idl/solana_svelte_twitter.json';
 	import '../app.css';
@@ -33,7 +35,7 @@
 	<input id="my-drawer-2" type="checkbox" class="drawer-toggle" bind:checked />
 	<div class="drawer-content flex flex-col bg-base-200">
 		<Header on:open={openDrawer} />
-		<main class="h-full overflow-y-scroll py-8 px-4">
+		<main class="h-full overflow-y-scroll py-8 px-4 relative">
 			{#if $walletStore?.connected}
 				<slot />
 			{:else}
@@ -42,6 +44,9 @@
 						<p class="font-bold text-primary-content text-xl">Your wallet is not connected</p>
 					</div>
 				</div>
+			{/if}
+			{#if $notificationStore !== null}
+				<Notifications />
 			{/if}
 		</main>
 	</div>
@@ -66,3 +71,9 @@
 		</div>
 	</div>
 </div>
+
+<style lang="postcss">
+	:global(.wallet-adapter-button-trigger) {
+		@apply bg-primary;
+	}
+</style>

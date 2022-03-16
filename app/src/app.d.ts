@@ -8,3 +8,9 @@ declare namespace App {
 	// interface Session {}
 	// interface Stuff {}
 }
+
+
+declare module '*.svg?src' {
+	const content: string
+	export default content
+}

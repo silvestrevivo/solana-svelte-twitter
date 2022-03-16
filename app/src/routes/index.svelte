@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+	import { flip } from 'svelte/animate';
 	import TweetCard from '$lib/TweetCard.svelte';
 	import { workSpace } from '@svelte-on-solana/wallet-adapter-anchor';
+	import { notificationStore } from '../stores/nofitications';
 	import type { PublicKey } from '@solana/web3.js';
 
 	let tweets = [];
@@ -12,21 +14,32 @@
 	}
 
 	async function removeTweet(publicKey: PublicKey) {
-		await $workSpace.program.rpc.deleteTweet({
-			accounts: {
-				tweet: publicKey,
-				author: $workSpace.provider.wallet.publicKey
-			}
-		});
+		try {
+			await $workSpace.program.rpc.deleteTweet({
+				accounts: {
+					tweet: publicKey,
+					author: $workSpace.provider.wallet.publicKey
+				}
+			});
+			notificationStore.set({ type: 'success' });
+		} catch (error) {
+			notificationStore.set({ type: 'error' });
+		}
+
 		fetchAllTweets();
 	}
 
 	async function makeFavorite(publicKey: PublicKey) {
-		await $workSpace.program.rpc.makeFavorite({
-			accounts: {
-				tweet: publicKey
-			}
-		});
+		try {
+			await $workSpace.program.rpc.makeFavorite({
+				accounts: {
+					tweet: publicKey
+				}
+			});
+			notificationStore.set({ type: 'success' });
+		} catch (error) {
+			notificationStore.set({ type: 'error' });
+		}
 		fetchAllTweets();
 	}
 
@@ -36,7 +49,7 @@
 <div class="space-y-8">
 	<h2 class="text-primary-content text-2xl font-bold">Tweeter feed</h2>
 	{#each tweets as { account, publicKey }, i (publicKey.toString())}
-		<div in:fade={{ duration: 200, delay: i * 100 }}>
+		<div in:fade={{ duration: 200, delay: i * 100 }} animate:flip={{ duration: 500 }}>
 			<TweetCard
 				{account}
 				{publicKey}

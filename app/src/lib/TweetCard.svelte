@@ -39,10 +39,10 @@
 					<!-- heart -->
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 {favorite ? 'fill-red-700' : 'fill-accent-focus'} cursor-pointer"
+						class="h-5 w-5 {favorite ? 'fill-red-700' : 'cursor-pointer fill-accent-focus'}"
 						viewBox="0 0 20 20"
 						fill="currentColor"
-						on:click={() => dispatch('fav', publicKey)}
+						on:click={() => !favorite && dispatch('fav', publicKey)}
 					>
 						<path
 							fill-rule="evenodd"
